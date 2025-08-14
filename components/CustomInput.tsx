@@ -19,6 +19,7 @@ const CustomInput = ({
         autoCapitalize='none'
         autoCorrect={false}
         value={value}
+        onChangeText={onChangeText}
         secureTextEntry={secureTextEntry}
         keyboardType={keyboardType}
         onFocus={() => setIsFocused(true)}
