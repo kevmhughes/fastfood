@@ -1,32 +1,39 @@
 import CustomButton from '@/components/CustomButton'
 import CustomInput from '@/components/CustomInput'
+import { createUser } from '@/lib/appwrite'
 import { Link, router } from 'expo-router'
 import React, { useState } from 'react'
 import { Alert, Text, View } from 'react-native'
 
 const SignUp = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [form, setForm] = useState({name: "", email: "", password: ""})
+  const [form, setForm] = useState({ name: "", email: "", password: "" })
 
   const submit = async () => {
-    if(!form.email || !form.password || !form.name) return Alert.alert("Error","Please enter valid name, email address & password.")
+    const { name, email, password } = form;
 
-      setIsSubmitting(true);
+    if (!email || !password || !name) return Alert.alert("Error", "Please enter valid name, email address & password.")
 
-      try {
-        // call Appwrite sign-in function
-        Alert.alert("Success", "User signed up successfully.")
-        router.replace("/")
-      } catch (error:any) {
-        Alert.alert("Error", error.message)
-      } finally {
-        setIsSubmitting(false)
-      }
+    setIsSubmitting(true);
+
+    try {
+      await createUser({
+        email,
+        password,
+        name
+      })
+
+      router.replace("/")
+    } catch (error: any) {
+      Alert.alert("Error", error.message)
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
     <View className='gap-10 bg-white rounded-lg p-5 mt-5'>
-            <CustomInput
+      <CustomInput
         placeholder="Enter your full name"
         value={form.name}
         onChangeText={(text) => setForm((prev) => ({ ...prev, name: text }))}
@@ -46,7 +53,7 @@ const SignUp = () => {
         label="Password"
         secureTextEntry={true}
       />
-      <CustomButton 
+      <CustomButton
         title="Sign Up"
         isLoading={isSubmitting}
         onPress={submit}
