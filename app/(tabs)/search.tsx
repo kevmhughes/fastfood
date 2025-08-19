@@ -5,6 +5,9 @@ import { useLocalSearchParams } from 'expo-router'
 import React, { useEffect } from 'react'
 import { FlatList, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import cn from "clsx"
+import MenuCard from '@/components/MenuCard'
+import { MenuItem } from '@/type'
 
 const Search = () => {
   const { category, query } = useLocalSearchParams<{ query: string; category: string }>()
@@ -16,15 +19,19 @@ const Search = () => {
     refetch({ category, query, limit: 6 })
   }, [category, query])
 
+
+
   return (
     <SafeAreaView className='bg-white h-full'>
       <FlatList
         data={data}
         renderItem={({ item, index }) => {
+          const isFirstRightColItem = index % 2 === 0;
+
           return (
-            <View className="flex-1 max-w-[48%]">
+            <View className={cn("flex-1 max-w-[48%]", !isFirstRightColItem ? "mt-10" : "mt-0")}>
               <Text>
-                Menu Card
+                <MenuCard item={item as MenuItem}/>
               </Text>
             </View>
           )
